@@ -13,3 +13,12 @@ Our team’s final project aims to train a neural network on a tabular dataset o
 
 Heart Failure Prediction Dataset: https://www.kaggle.com/datasets/fedesoriano/heart-failure-prediction 
 
+
+####################################################################################################################################
+####################################################################################################################################
+
+Design History of Neural Network
+
+# This section provides useful insight on successful and failed attempts made while creating network along with data to quantify the success of the network
+
+
