@@ -1,12 +1,49 @@
+# Importing the necessary libraries and packages
 import pandas as pd
+from pandas.plotting import scatter_matrix
 import numpy as np
+import matplotlib.pyplot as plt
+%matplotlib inline
 import seaborn as sns
+import keras
+import sklearn
 from sklearn.preprocessing import StandardScaler
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import confusion_matrix, accuracy_score
 from sklearn.naive_bayes import GaussianNB
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.neighbors import KNeighborsClassifier
+pd.options.display.float_format = '{:.2f}'.format
+import warnings
+warnings.filterwarnings('ignore')
 
-df = pd.read_csv(r'/kaggle/input/heart-failure-prediction/heart.csv')
-df.head()
+# Importing and reading the relevant data set
+PhysInfo = pd.read_csv(r'/kaggle/input/heart-failure-prediction/heart.csv')
+# Print the head (first five rows) of the data set
+PhysInfo.head()
+
+# Analyze and print the shape of the data set
+print( 'Shape of PhysInfo: {}'.format(PhysInfo.shape))
+print(PhysInfo.columns)
+PhysInfo.info()
+#print (PhysInfo.loc[1]) (?)
+
+# Check for null values present in the data set
+sns.heatmap(PhysInfo.isnull(), cmap = 'magma', cbar = False);
+
+# Remove any missing data or null values from the data
+PhysInfo_clean = PhysInfo[~PhysInfo.isin(['?'])]
+PhysInfo_clean = PhysInfo_clean.dropna(axis=0)
+
+# Describe the data set after transformation/cleansing
+print(PhysInfo_clean.shape)
+PhysInfo_clean.describe().T
+print(PhysInfo_clean.dtypes)
+# Plot histograms for each variable
+PhysInfo_clean.hist(figsize = (12, 12))
+plt.show()
+# Create a heatmap of the data set
+plt.figure(figsize = (12, 12))
+sns.heatmap(PhysInfo_clean.corr(), annot=True, fmt=' .1f')
+plt.show()
+# Plot the means of each applicable feature of the data set
