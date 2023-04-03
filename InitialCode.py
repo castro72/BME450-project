@@ -83,6 +83,28 @@ deep['ExerciseAngina'] = label.fit_transform(deep['ExerciseAngina'])
 deep['ST_Slope'] = label.fit_transform(deep['ST_Slope'])
 
 # Find and Plot the Distribution of the Variables
-  #Categorical Distribution
+  # Categorical Distribution
+fig, ax =  plt.subplots(nrows = 3, ncols = 2, figsize = (10, 15))
+for i in range(len(categorical) - 1):
+  plt.subplot(3, 2, i+1)
+  sns.distplot(deep[categorical[i]], kde_kws = {'bw' : 1}, color = colors[0]);
+  title = 'Histogram of ' + categorical[i]
+  plt.title(title)
+plt.figure(figsize = (5, 5))
+sns.distplot(deep[categorical[len(categorical) - 1]], kde_kws = {'bw' : 1}, color = colors[0])
+title = 'Histogram of ' + categorical[len(categorical) - 1]
+plt.title(title);
+  # Numerical Distribution
+fig, ax =  plt.subplots(nrows = 2, ncols = 2, figsize = (10, 10))
+for i in range(len(numerical) - 1):
+  plt.subplot(2, 2, i+1)
+  sns.distplot(PhysInfo_clean[numerical[i]], color = colors[0]);
+  title = 'Histogram of ' + numerical[i]
+  plt.title(title)
+plt.show()
+plt.figure(figsize = (5, 5))
+sns.distplot(deep[numerical[len(numerical) - 1]], kde_kws = {'bw' : 1}, color = colors[0])
+title = 'Histogram of ' + numerical[len(numerical) - 1]
+plt.title(title);
 
-  #Numerical Distribution
+# Determine the balance of the data set (w.r.t. Heart Disease v. No Heart Disease)
