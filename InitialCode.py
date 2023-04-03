@@ -108,3 +108,13 @@ title = 'Histogram of ' + numerical[len(numerical) - 1]
 plt.title(title);
 
 # Determine the balance of the data set (w.r.t. Heart Disease v. No Heart Disease)
+HeartDisease = list(data['HeartDisease'].value_counts())
+pie = [HeartDisease[1] / sum(HeartDisease) * 100, HeartDisease[0] / sum(HeartDisease) * 100]
+plt.figure(figsize = (5, 5))
+plt.pie(pie, labels = ['No Heart Disease', 'Heart Disease'', autopct = '%1.1f%%', startangle = 90, explode = (0.1, 0), colors = colors, wedgeprops = {'edgecolor' : 'black', 'linewidth' : 1, 'antialiased' : True})
+plt.title('Heart Disease %');
+plt.show()
+
+# Categorical Variables w.r.t. Heart Disease
+
+# Numerical Variable w.r.t. Heart Disease
