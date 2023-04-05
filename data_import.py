@@ -59,7 +59,7 @@ df_enc['ST_Slope'] = le.fit_transform(df_in['ST_Slope'])
 
 print("\nConversion of Categorical Values to Numerical Values\n")
 
-for i in range(len(categorical_features) - 1):
+for i in range(len(categorical_features)):
     print("\n",categorical_features[i],":", df_in[categorical_features[i]].unique(), "-->", df_enc[categorical_features[i]].unique())
 print("\n")
 #Create Training, Validation, and Test sets
@@ -73,9 +73,9 @@ df_val = df_enc.iloc[n1:n2]
 df_tst = df_enc.iloc[n2:]
 
 #expected outcome
-ypred_tr = df_results.iloc[:n1]
-ypred_val = df_results.iloc[n1:n2]
-ypred_tst = df_results.iloc[n2:]
+ys_tr = df_results.iloc[:n1]
+ys_val = df_results.iloc[n1:n2]
+ys_tst = df_results.iloc[n2:]
 
 print("\nTraining Dataset Inputs: \n",df_tr)
 print("\n")
@@ -85,16 +85,58 @@ print("\nTest Dataset Inputs:\n" , df_tst)
 print("\n")
 
 
-print("\nTraining Dataset Expected Outputs: \n" ,ypred_tr)
+print("\nTraining Dataset Expected Outputs: \n" ,ys_tr)
 print("\n")
-print("Validation Dataset Expected Outputs: \n" ,ypred_val)
+print("Validation Dataset Expected Outputs: \n" ,ys_val)
 print("\n")
-print("Test Dataset Expected Outputs: \n" , ypred_tst)
+print("Test Dataset Expected Outputs: \n" , ys_tst)
 
 
+##Training 
 
-# print(df.iloc[:1])
+xs = [[]] ## each row of 11 inputs
+for i in range(len(df_tr)):
+    xs.append((df_tr.iloc[i, 0], df_tr.iloc[i, 1], df_tr.iloc[i, 2], df_tr.iloc[i, 3], 
+          df_tr.iloc[i, 4], df_tr.iloc[i, 5], df_tr.iloc[i, 6], df_tr.iloc[i, 7], 
+          df_tr.iloc[i, 8], df_tr.iloc[i, 9], df_tr.iloc[i, 10]))
+del(xs[0])
+    
+# print("\n")
+# print(len(xs), len(xs[0]))
+# print(xs)
+
+ytr_pred = [0] * len(df_tr.index)
+# print(ytr_pred)
 
 
+##Validation
 
+xs = [[]] ## each row of 11 inputs
+for i in range(len(df_val)):
+    xs.append((df_val.iloc[i, 0], df_val.iloc[i, 1], df_val.iloc[i, 2], df_val.iloc[i, 3], 
+          df_val.iloc[i, 4], df_val.iloc[i, 5], df_val.iloc[i, 6], df_val.iloc[i, 7], 
+          df_val.iloc[i, 8], df_val.iloc[i, 9], df_val.iloc[i, 10]))
+del(xs[0])
+    
+# print("\n")
+# print(len(xs), len(xs[0]))
+# print(xs)
 
+yval_pred = [0] * len(df_val.index)
+# print(ytr_pred)
+
+#Testing
+
+xs = [[]] ## each row of 11 inputs
+for i in range(len(df_tst)):
+    xs.append((df_tst.iloc[i, 0], df_tst.iloc[i, 1], df_tst.iloc[i, 2], df_tst.iloc[i, 3], 
+          df_tst.iloc[i, 4], df_tst.iloc[i, 5], df_tst.iloc[i, 6], df_tst.iloc[i, 7], 
+          df_tst.iloc[i, 8], df_tst.iloc[i, 9], df_tst.iloc[i, 10]))
+del(xs[0])
+    
+# print("\n")
+# print(len(xs), len(xs[0]))
+# print(xs)
+
+ytst_pred = [0] * len(df_tst.index)
+# print(ytr_pred)
