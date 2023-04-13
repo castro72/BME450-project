@@ -41,6 +41,13 @@ PhysInfo_clean = PhysInfo[~PhysInfo.isin(['?'])]
 PhysInfo_clean = PhysInfo_clean.dropna(axis=0)
 
 # Convert the data into features that the machine will understand
+le = LabelEncoder()
+PhysInfo_clean['Sex'] = le.fit_transform(PhysInfo_clean['Sex'])
+PhysInfo_clean['ChestPainType'] = le.fit_transform(PhysInfo_clean['ChestPainType'])
+PhysInfo_clean['RestingECG'] = le.fit_transform(PhysInfo_clean['RestingECG'])
+PhysInfo_clean['ExerciseAngina'] = le.fit_transform(PhysInfo_clean['ExerciseAngina'])
+PhysInfo_clean['ST_Slope'] = le.fit_transform(PhysInfo_clean['ST_Slope'])
+
 mms = MinMaxScaler() # Normalization
 ss = StandardScaler() # Standardization
 
