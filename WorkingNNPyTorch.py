@@ -29,7 +29,8 @@ class HeartDataset(Dataset):
         df = pd.read_csv("/Users/jakecastro/Desktop/Classes/BME450/heart.csv")
 
         # Grouping variable names
-        self.categorical = [1, 2, 6, 8, 10]
+        self.categorical = ["Sex", "ChestPainType", "RestingECG", "ExerciseAngina", "ST_Slope"]
+        self.numerical = ["Age", "RestingBP", "Cholesterol", "FastingBS", "MaxHR", "Oldpeak"]
         self.target = "HeartDisease"
 
         # One-hot encoding of categorical variables
@@ -165,7 +166,7 @@ print()
 parser = argparse.ArgumentParser()
 parser.add_argument("--file", "-f", nargs="?", const=csv_file, default=csv_file,
                     help="Dataset file used for training")
-parser.add_argument("--epochs", "-e", type=int, nargs="?", default=100, help="Number of epochs to train")
+parser.add_argument("--epochs", "-e", type=int, nargs="?", default=1000, help="Number of epochs to train")
 args = parser.parse_args()
 
 # Call the main function of the script
