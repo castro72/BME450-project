@@ -17,6 +17,8 @@ from torch.utils.data import Dataset, DataLoader, random_split
 import argparse
 
 
+### NOTE: change so that for every single epoch, test and train is ran.
+
 #  ---------------  Dataset  ---------------
 
     
@@ -116,11 +118,10 @@ def train(csv_file, n_epochs = 1000):
     criterion = nn.MSELoss()
 
     # Optimizer
-    optimizer = optim.Adam(net.parameters(), weight_decay=0.001)
+    optimizer = optim.Adam(net.parameters(), lr = 0.0025, weight_decay=0.001)
 
     # Train the net
     loss_per_iter_train = []
-    loss_per_batch_train = []
     epoch_loss_train = []
     for epoch in range(n_epochs):
 
@@ -142,7 +143,6 @@ def train(csv_file, n_epochs = 1000):
             running_loss_train += loss.item()
             loss_per_iter_train.append(loss.item())
 
-        loss_per_batch_train.append(running_loss_train / (i + 1))
         epoch_loss_train.append(running_loss_train)
         
     # print(len(epoch_loss_train))
@@ -150,7 +150,6 @@ def train(csv_file, n_epochs = 1000):
         
     # print(len(loss_per_batch_train))
     loss_per_iter_test = []
-    loss_per_batch_test = []
     epoch_loss_test = []
     
     for epoch in range(n_epochs):
@@ -173,7 +172,6 @@ def train(csv_file, n_epochs = 1000):
             running_loss_test += loss.item()
             loss_per_iter_test.append(loss.item())
 
-        loss_per_batch_test.append(running_loss_test / (i + 1))
         epoch_loss_test.append(running_loss_test)
         
         
