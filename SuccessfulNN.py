@@ -123,9 +123,15 @@ def train(csv_file, n_epochs = 1000):
     # Train the net
     loss_per_iter_train = []
     epoch_loss_train = []
+    
+    loss_per_iter_test = []
+    epoch_loss_test = []
+    
+    
     for epoch in range(n_epochs):
 
         running_loss_train = 0.0
+        running_loss_test = 0.0
         for i, (inputs, labels) in enumerate(trainloader):
             inputs = inputs.to(device)
             labels = labels.to(device)
@@ -145,16 +151,6 @@ def train(csv_file, n_epochs = 1000):
 
         epoch_loss_train.append(running_loss_train)
         
-    # print(len(epoch_loss_train))
-    # print(epoch_loss_train)
-        
-    # print(len(loss_per_batch_train))
-    loss_per_iter_test = []
-    epoch_loss_test = []
-    
-    for epoch in range(n_epochs):
-
-        running_loss_test = 0.0
         for i, (inputs, labels) in enumerate(testloader):
             inputs = inputs.to(device)
             labels = labels.to(device)
@@ -173,6 +169,12 @@ def train(csv_file, n_epochs = 1000):
             loss_per_iter_test.append(loss.item())
 
         epoch_loss_test.append(running_loss_test)
+        
+    # print(len(epoch_loss_train))
+    # print(epoch_loss_train)
+        
+    # print(len(loss_per_batch_train))
+        
         
         
 
@@ -204,7 +206,7 @@ csv_file = "/Users/jakecastro/Desktop/Classes/BME450/heart.csv"
 parser = argparse.ArgumentParser()
 parser.add_argument("--file", "-f", nargs="?", const=csv_file, default=csv_file,
                     help="Dataset file used for training")
-parser.add_argument("--epochs", "-e", type=int, nargs="?", default=1000, help="Number of epochs to train")
+parser.add_argument("--epochs", "-e", type=int, nargs="?", default=500, help="Number of epochs to train")
 args = parser.parse_args()
 
 # Call the main function of the script
