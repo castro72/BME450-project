@@ -173,9 +173,20 @@ def train(csv_file, n_epochs = 1000):
             loss_per_iter_test.append(loss.item())
 
         epoch_loss_test.append(running_loss_test)
-        
-        
-
+    
+    # Calculate the accuracy
+    correct = 0
+    total = 0
+    with torch.no_grad():
+        for i, (inputs, labels) in enumerate(testloader):
+            inputs = inputs.to(device)
+            labels = labels.to(device)
+            outputs = net(inputs.float())
+            _, predicted = torch.max(outputs.data, 1)
+            total += labels.size(0)
+            correct += (predicted == labels).sum.item()
+    print(f'Accuracy of the network: {100 * correct // total}%')
+    
     # Comparing training to test
     dataiter = iter(testloader)
     inputs, labels = dataiter.next()
