@@ -68,9 +68,11 @@ class Net(nn.Module):
         self.fc1 = nn.Linear(D_in, H)
         self.fc2 = nn.Linear(H, H)
         self.fc3 = nn.Linear(H, H)
-        self.fc4 = nn.Linear(H, 5)
-        self.fc5 = nn.Linear(5, D_out)
-        self.relu = nn.ReLU()
+        self.fc4 = nn.Linear(H, 9)
+        self.fc5 = nn.Linear(9,5)
+        self.fc6 = nn.Linear(5, D_out)
+        self.relu = nn.ReLU() 
+
 
     def forward(self, x):
         x = self.fc1(x)
@@ -82,6 +84,8 @@ class Net(nn.Module):
         x = self.fc4(x)
         x = self.relu(x)
         x = self.fc5(x)
+        x = self.relu(x)
+        x = self.fc6(x)
 
         return x.squeeze()
 
@@ -104,14 +108,14 @@ def train(csv_file, n_epochs = 1000):
 
     # Dataloaders
     trainloader = DataLoader(trainset, batch_size = 50, shuffle=True)
-    testloader = DataLoader(testset, batch_size = 50, shuffle=True)
+    testloader = DataLoader(testset, batch_size = 50, shuffle= False)
 
     print(trainloader.dataset)
     # Use gpu if available
     device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
 
     # Define the model
-    D_in, H = 20, 9
+    D_in, H = 20, 11
     net = Net(D_in, H).to(device)
 
     # Loss function
@@ -128,10 +132,14 @@ def train(csv_file, n_epochs = 1000):
     epoch_loss_test = []
     
     
+    
+    
     for epoch in range(n_epochs):
 
         running_loss_train = 0.0
         running_loss_test = 0.0
+        correct = 0
+        
         net.train()
         for i, (inputs, labels) in enumerate(trainloader):
             inputs = inputs.to(device)
@@ -142,6 +150,7 @@ def train(csv_file, n_epochs = 1000):
 
             # Forward + backward + optimize
             outputs = net(inputs.float())
+            # print(outputs)
             loss = criterion(outputs, labels.float())
             loss.backward()
             optimizer.step()
@@ -161,31 +170,59 @@ def train(csv_file, n_epochs = 1000):
                 # Forward + backward + optimize
                 outputs = net(inputs.float())
                 loss = criterion(outputs, labels.float())
+                
+                result = (outputs  > 0.5).float()
+                
+                # print(result)
+                
 
                 # Save loss to plot
                 running_loss_test = loss.item() * inputs.size(0)
                 loss_per_iter_test.append(loss.item())
-
+                correct += (result == labels).float().sum()
+                
+              
             epoch_loss_test.append(running_loss_test)
+            
+            acc = 100 * (correct / len(trainset))
+        
+        print("Epoch {} Accuracy: {}%".format(epoch, acc ))
+            
+            
+            
+           
+
+            # for batch_idx,(input, target) in enumerate(loader):
+            #     output = model(input)
+            #         # measure accuracy and record loss
+            #             batch_size = target.size(0)
+            #             _, pred = output.data.cpu().topk(1, dim=1)
+            #             pred = pred.t()
+            #             y_pred = model(input)
+            #             accuracy=binary_acc(y_pred,target)
+                          
+            # Calculate the accuracy
+            
+        # acc == (input.target == net(inputs.float()).max(1).item() / input.size(0))
+            
+        # correct = 0
+        # total = 0
+        # with torch.no_grad():
+        #     for i, (inputs, labels) in enumerate(testloader):
+        #         inputs = inputs.to(device)
+        #         labels = labels.to(device)
+        #         outputs = net(inputs.float())
+        #         _, predicted = torch.max(outputs.data, 1)
+        #         total += labels.size(0)
+        #         correct += (predicted == labels).sum.item()
+        #         print(f'Accuracy of the network: {100 * correct // total}%')
         
     # print(len(epoch_loss_train))
     # print(epoch_loss_train)
         
     # print(len(loss_per_batch_train))
         
-        
-    # Calculate the accuracy
-    correct = 0
-    total = 0
-    with torch.no_grad():
-        for i, (inputs, labels) in enumerate(testloader):
-            inputs = inputs.to(device)
-            labels = labels.to(device)
-            outputs = net(inputs.float())
-            _, predicted = torch.max(outputs.data, 1)
-            total += labels.size(0)
-            correct += (predicted == labels).sum.item()
-    print(f'Accuracy of the network: {100 * correct // total}%')
+    
 
     # Comparing training to test
     dataiter = iter(testloader)
@@ -196,6 +233,9 @@ def train(csv_file, n_epochs = 1000):
     print("Root mean squared error")
     print("Training:", np.sqrt(epoch_loss_train[-1]))
     print("Test", np.sqrt(epoch_loss_test[-1]))
+    
+
+    
 
     # Plot training loss curve
     #plt.plot(np.arange(len(loss_per_iter_train)), loss_per_iter_train, "-", alpha=0.5, label="Training Loss per epoch")
