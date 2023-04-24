@@ -103,8 +103,8 @@ def train(csv_file, n_epochs = 1000):
     trainset, testset = random_split(dataset, [train_size, test_size])
 
     # Dataloaders
-    trainloader = DataLoader(trainset, batch_size = 100, shuffle=True)
-    testloader = DataLoader(testset, batch_size = 100, shuffle=True)
+    trainloader = DataLoader(trainset, batch_size = 50, shuffle=True)
+    testloader = DataLoader(testset, batch_size = 50, shuffle=True)
 
     print(trainloader.dataset)
     # Use gpu if available
@@ -123,9 +123,16 @@ def train(csv_file, n_epochs = 1000):
     # Train the net
     loss_per_iter_train = []
     epoch_loss_train = []
+    
+    loss_per_iter_test = []
+    epoch_loss_test = []
+    
+    
     for epoch in range(n_epochs):
 
         running_loss_train = 0.0
+        running_loss_test = 0.0
+        net.train()
         for i, (inputs, labels) in enumerate(trainloader):
             inputs = inputs.to(device)
             labels = labels.to(device)
@@ -145,48 +152,30 @@ def train(csv_file, n_epochs = 1000):
 
         epoch_loss_train.append(running_loss_train)
         
+        net.eval()
+        with torch.no_grad():
+            for i, (inputs, labels) in enumerate(testloader):
+                inputs = inputs.to(device)
+                labels = labels.to(device)
+
+                # Forward + backward + optimize
+                outputs = net(inputs.float())
+                loss = criterion(outputs, labels.float())
+
+                # Save loss to plot
+                running_loss_test = loss.item() * inputs.size(0)
+                loss_per_iter_test.append(loss.item())
+
+            epoch_loss_test.append(running_loss_test)
+        
     # print(len(epoch_loss_train))
     # print(epoch_loss_train)
         
     # print(len(loss_per_batch_train))
-    loss_per_iter_test = []
-    epoch_loss_test = []
-    
-    for epoch in range(n_epochs):
+        
+        
+        
 
-        running_loss_test = 0.0
-        for i, (inputs, labels) in enumerate(testloader):
-            inputs = inputs.to(device)
-            labels = labels.to(device)
-            
-            # Zero the parameter gradients
-            optimizer.zero_grad()
-
-            # Forward + backward + optimize
-            outputs = net(inputs.float())
-            loss = criterion(outputs, labels.float())
-            loss.backward()
-            optimizer.step()
-
-            # Save loss to plot
-            running_loss_test += loss.item()
-            loss_per_iter_test.append(loss.item())
-
-        epoch_loss_test.append(running_loss_test)
-    
-    # Calculate the accuracy
-    correct = 0
-    total = 0
-    with torch.no_grad():
-        for i, (inputs, labels) in enumerate(testloader):
-            inputs = inputs.to(device)
-            labels = labels.to(device)
-            outputs = net(inputs.float())
-            _, predicted = torch.max(outputs.data, 1)
-            total += labels.size(0)
-            correct += (predicted == labels).sum.item()
-    print(f'Accuracy of the network: {100 * correct // total}%')
-    
     # Comparing training to test
     dataiter = iter(testloader)
     inputs, labels = dataiter.next()
@@ -215,7 +204,7 @@ csv_file = "/Users/jakecastro/Desktop/Classes/BME450/heart.csv"
 parser = argparse.ArgumentParser()
 parser.add_argument("--file", "-f", nargs="?", const=csv_file, default=csv_file,
                     help="Dataset file used for training")
-parser.add_argument("--epochs", "-e", type=int, nargs="?", default=1000, help="Number of epochs to train")
+parser.add_argument("--epochs", "-e", type=int, nargs="?", default=500, help="Number of epochs to train")
 args = parser.parse_args()
 
 # Call the main function of the script
